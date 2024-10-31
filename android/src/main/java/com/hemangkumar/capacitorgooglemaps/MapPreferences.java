@@ -9,6 +9,8 @@ public class MapPreferences {
     public MapPreferencesGestures gestures;
     public MapPreferencesControls controls;
     public MapPreferencesAppearance appearance;
+    public Integer minZoom;
+    public Integer maxZoom;
 
     public MapPreferences() {
         this.gestures = new MapPreferencesGestures();
@@ -27,6 +29,9 @@ public class MapPreferences {
             // update appearance
             JSObject appearanceObject = preferences.getJSObject("appearance");
             this.appearance.updateFromJSObject(appearanceObject);
+            // update zoom
+            this.minZoom = preferences.getInteger("minZoom", 1);
+            this.maxZoom = preferences.getInteger("maxZoom", 21);
         }
     }
 

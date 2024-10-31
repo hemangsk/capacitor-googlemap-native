@@ -111,6 +111,9 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
         self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
         
+        // set zoom
+        self.GMapView.setMinZoom(self.mapPreferences.minZoom, maxZoom: self.mapPreferences.maxZoom);
+
         return self.getResultForMap();
     }
     
@@ -118,9 +121,10 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         return self.getResultForMap();
     }
     
-    func clearMap() {
+    func clearMap(hide: Bool) {
         if (self.GMapView != nil) {
             self.GMapView.clear();
+            self.GMapView.isHidden = hide == true;
         }
     }
     

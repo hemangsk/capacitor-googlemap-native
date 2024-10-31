@@ -11,6 +11,8 @@ import {
   RemoveMapOptions,
   ClearMapOptions,
   MoveCameraOptions,
+  GetRegionInfoOptions,
+  GetRegionInfoResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
@@ -71,6 +73,10 @@ export class CapacitorGoogleMapsWeb
 
   async moveCamera(_options: MoveCameraOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
+  }
+
+  async getRegionInfo(_options: GetRegionInfoOptions): Promise<GetRegionInfoResult> {
+    throw new Error('Method not implemented on web.');
   }
 
   async addMarker(_options: AddMarkerOptions): Promise<AddMarkerResult> {

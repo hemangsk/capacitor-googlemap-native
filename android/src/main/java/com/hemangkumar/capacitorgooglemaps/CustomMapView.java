@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -359,6 +360,8 @@ public class CustomMapView
 
         GoogleMapOptions googleMapOptions = this.mapPreferences.generateGoogleMapOptions();
         googleMapOptions.camera(this.mapCameraPosition.cameraPosition);
+        googleMapOptions.minZoomPreference(mapPreferences.minZoom);
+        googleMapOptions.maxZoomPreference(mapPreferences.maxZoom);
 
         mapView = new MapView(activity, googleMapOptions);
 
@@ -444,9 +447,10 @@ public class CustomMapView
         parent.removeView(mapView);
     }
 
-    public void clear() {
+    public void clear(boolean hide) {
         googleMap.clear();
         markers.clear();
+        mapView.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
     }
 
     public void addMarker(CustomMarker customMarker, @Nullable Consumer<Marker> consumer) {

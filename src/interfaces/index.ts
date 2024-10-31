@@ -5,6 +5,7 @@ export { UpdateMapOptions, UpdateMapResult } from "./methods/UpdateMap";
 export { RemoveMapOptions } from "./methods/RemoveMap";
 export { ClearMapOptions } from "./methods/ClearMap";
 export { MoveCameraOptions } from "./methods/MoveCamera";
+export { GetRegionInfoOptions, GetRegionInfoResult } from './methods/GetRegionInfo';
 export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult";
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
 export {

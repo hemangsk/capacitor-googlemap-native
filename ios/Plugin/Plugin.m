@@ -10,6 +10,7 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(clearMap, CAPPluginReturnNone);
            CAP_PLUGIN_METHOD(removeMap, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(moveCamera, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(getRegionInfo, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(addMarker, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(addMarkers, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(removeMarker, CAPPluginReturnPromise);

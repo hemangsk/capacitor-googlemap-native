@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.getcapacitor.annotation.Permission;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.VisibleRegion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -278,7 +278,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve(result);
                 } else {
-                    call.reject("map not found");
+                    call.reject("updateMap: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -298,7 +298,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve(result);
                 } else {
-                    call.reject("map not found");
+                    call.reject("getMap: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -318,7 +318,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMapViews.remove(mapId);
                     call.resolve();
                 } else {
-                    call.reject("map not found");
+                    call.reject("removeMap: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -327,6 +327,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void clearMap(final PluginCall call) {
         final String mapId = call.getString("mapId");
+        final boolean hide = Boolean.TRUE.equals(call.getBoolean("hide", false));
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -334,10 +335,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                 CustomMapView customMapView = customMapViews.get(mapId);
 
                 if (customMapView != null) {
-                    customMapView.clear();
+                    customMapView.clear(hide);
                     call.resolve();
                 } else {
-                    call.reject("map not found");
+                    call.reject("clearMap: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -371,7 +372,60 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve();
                 } else {
-                    call.reject("map not found");
+                    call.reject("moveCamera: map not found, mapId: " + mapId);
+                }
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void getRegionInfo(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    VisibleRegion region = customMapView.googleMap.getProjection().getVisibleRegion();
+
+                    JSObject topLeft = new JSObject();
+                    JSObject topRight = new JSObject();
+                    JSObject bottomLeft = new JSObject();
+                    JSObject bottomRight = new JSObject();
+
+                    topLeft.put("latitude", region.latLngBounds.northeast.latitude);
+                    topLeft.put("longitude", region.latLngBounds.southwest.longitude);
+
+                    topRight.put("latitude", region.latLngBounds.northeast.latitude);
+                    topRight.put("longitude", region.latLngBounds.northeast.longitude);
+
+                    bottomLeft.put("latitude", region.latLngBounds.southwest.latitude);
+                    bottomLeft.put("longitude", region.latLngBounds.southwest.longitude);
+
+                    bottomRight.put("latitude", region.latLngBounds.southwest.latitude);
+                    bottomRight.put("longitude", region.latLngBounds.northeast.longitude);
+
+                    JSObject bounds = new JSObject();
+                    bounds.put("topLeft", topLeft);
+                    bounds.put("topRight", topRight);
+                    bounds.put("bottomLeft", bottomLeft);
+                    bounds.put("bottomRight", bottomRight);
+
+                    JSObject center = new JSObject();
+                    center.put("latitude", region.latLngBounds.getCenter().latitude);
+                    center.put("longitude", region.latLngBounds.getCenter().longitude);
+
+                    CameraPosition camera = customMapView.googleMap.getCameraPosition();
+                    JSObject result = new JSObject();
+                    result.put("bounds", bounds);
+                    result.put("center", center);
+                    result.put("zoom", camera.zoom);
+
+                    call.resolve(result);
+                } else {
+                    call.reject("getRegionInfo: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -500,7 +554,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                         }
                     );
                 } else {
-                    call.reject("map not found");
+                    call.reject("addMarker: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -511,7 +565,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         final String mapId = call.getString("mapId");
         CustomMapView customMapView = customMapViews.get(mapId);
         if (customMapView == null) {
-            call.reject("map not found");
+            call.reject("addMarkers: map not found, mapId: " + mapId);
             return;
         }
         try {
@@ -539,7 +593,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve();
                 } else {
-                    call.reject("map not found");
+                    call.reject("removeMarker: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -562,7 +616,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                         call.resolve(customPolygon.getResultForPolygon(polygon, mapId));
                     });
                 } else {
-                    call.reject("map not found");
+                    call.reject("addPolygon: map not found, mapId: " + mapId);
                 }
             }
         });
@@ -584,7 +638,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve();
                 } else {
-                    call.reject("map not found");
+                    call.reject("removePolygon: map not found, mapId: " + mapId);
                 }
             }
         });
