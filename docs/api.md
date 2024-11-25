@@ -18,11 +18,12 @@ initialize(options: InitializeOptions) => Promise<void>
 ### createMap(...)
 
 ```typescript
-createMap(options: CreateMapOptions) => Promise<CreateMapResult>
+createMap(element: HTMLElement, options: CreateMapOptions = {}) => Promise<CreateMapResult>
 ```
 
 | Param         | Type                                               |
 | ------------- | -------------------------------------------------- |
+| **`element`** | <code>[HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement)</code> |
 | **`options`** | <code>[CreateMapOptions](#createmapoptions)</code> |
 
 **Returns:** <code>Promise&lt;[CreateMapResult](#createmapresult)&gt;</code>

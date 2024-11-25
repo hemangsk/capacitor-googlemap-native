@@ -65,19 +65,9 @@ const initializeMap = async () => {
   // then get the element you want to attach the Maps instance to:
   const element = document.getElementById("container");
 
-  // afterwards get its boundaries like so:
-  const boundingRect = element.getBoundingClientRect();
-
   // we can now create the map using the boundaries of #container
   try {
-    const result = await CapacitorGoogleMaps.createMap({
-      boundingRect: {
-        width: Math.round(boundingRect.width),
-        height: Math.round(boundingRect.height),
-        x: Math.round(boundingRect.x),
-        y: Math.round(boundingRect.y),
-      },
-    });
+    const result = await CapacitorGoogleMaps.createMap(element);
 
     // remove background, so map can be seen
     // (you can read more about this in the "Setting up the WebView" guide)

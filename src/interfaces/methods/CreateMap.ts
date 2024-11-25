@@ -17,7 +17,7 @@ export interface CreateMapOptions {
   /**
    * @since 2.0.0
    */
-  cameraPosition: CameraPosition;
+  cameraPosition?: CameraPosition;
   /**
    * @since 2.0.0
    */
