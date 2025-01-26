@@ -138,14 +138,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     
     @objc func clearMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
+        let hide: Bool = call.getBool("hide", false)
 
         DispatchQueue.main.async {
             guard let customMapView = self.customWebView?.customMapViews[mapId] else {
                 call.reject("map not found")
                 return
             }
-            
-            let result = customMapView.clearMap()
+
+            let result = customMapView.clearMap(hide: hide)
             
             call.resolve()
         }
@@ -179,6 +180,46 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             customMapView.moveCamera(duration)
 
             call.resolve()
+        }
+    }
+
+   @objc func getRegionInfo(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "")
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let region = customMapView.GMapView.projection.visibleRegion();
+            let centerCoords = customMapView.GMapView.projection.coordinate(for: customMapView.GMapView.center)
+
+            call.resolve([
+                "bounds": [
+                    "topLeft": [
+                        "latitude": region.farLeft.latitude as Any,
+                        "longitude": region.farLeft.longitude as Any
+                    ],
+                    "topRight": [
+                        "latitude": region.farRight.latitude as Any,
+                        "longitude": region.farRight.longitude as Any
+                    ],
+                    "bottomLeft": [
+                        "latitude": region.nearLeft.latitude as Any,
+                        "longitude": region.nearLeft.longitude as Any
+                    ],
+                    "bottomRight": [
+                        "latitude": region.nearRight.latitude as Any,
+                        "longitude": region.nearRight.longitude as Any
+                    ]
+                ],
+                "center": [
+                    "latitude": centerCoords.latitude as Any,
+                    "longitude": centerCoords.longitude as Any
+                ],
+                "zoom": customMapView.GMapView.camera.zoom
+            ])
         }
     }
 
